@@ -9,10 +9,13 @@ private:
     EventLoop &eloop;
     int fd;
     uint32_t events;
-    uint32_t revents;
+    uint32_t ready;
     bool inEpoll;
+    bool useThreadPool;
 
-    std::function<void()> callback;
+    std::function<void()> readCallback;
+    std::function<void()> writeCallback;
+
 public:
     Channel(EventLoop &_ep, int _fd);
     ~Channel();
@@ -20,7 +23,7 @@ public:
     //处理事件
     void handleEvent();
     //设置 events 可读 边沿触发
-    void enableReading();
+    void enableRead();
 
     int getFd();
     uint32_t getEvents();
@@ -28,8 +31,12 @@ public:
 
     bool getInEpoll();
     void setInEpoll(bool);
+    void useET();
 
-    void setRevents(uint32_t);
+    void setReady(uint32_t);
 
-    void setCallback(std::function<void()>);
+    void setReadCallback(std::function<void()>);
+    void setWriteCallback(std::function<void()>);
+    
+    void setUseThreadPool(bool use = true);
 };

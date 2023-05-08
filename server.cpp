@@ -4,7 +4,7 @@
 int main(){
     EventLoop loop;
     Server sever(loop, "192.168.124.149");
-    //loop.loop();
+    loop.loop();
     return 0;
 }
         

@@ -51,6 +51,7 @@ void Epoll::removefd(int sockfd){
 //     return nfds;
 // }
 
+//监听事件 并返回就绪事件队列
 std::vector<Channel*> Epoll::poll(int timeout){
     
     int nfds = ::epoll_wait(m_epollfd, events, MAX_EVENTS, timeout);
@@ -60,13 +61,14 @@ std::vector<Channel*> Epoll::poll(int timeout){
     for(int i = 0; i < nfds; ++i){
         //activeEvents[i] = events[i];
         Channel *ch = (Channel*)events[i].data.ptr;
-        ch->setRevents(events[i].events);
+        ch->setReady(events[i].events);
         //获取事件
         activeEvents[i] = ch;
     }
     return activeEvents;
 }
 
+//更新事件
 void Epoll::updateChannel(Channel* channel){
     int fd = channel->getFd();
     struct epoll_event ev;
